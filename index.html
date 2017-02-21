@@ -1,20 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
   <style>
-    #upload-area {
+    #drop-zone {
       width: 400px;
       height: 400px;
-      background-color: #ccc;
+      border: 2px dashed gray;
+    }
+    
+    #drop-zone.active {
+      border: 2px dashed green;
     }
   </style>
+  </style>
 </head>
+
 <body>
-  <h1>uploader</h1>
+  <h1>Current Files</h1>
+  <ul id="files-list">
+  </ul>
+  <h2>uploader</h2>
   <form>
-    <div id="upload-area"></div>
+    <div id="drop-zone"></div>
   </form>
+  <script>
+    fetch("/files").then(res => res.json()).then(files => {
+      const list = document.getElementById('files-list');
+      const frag = document.createDocumentFragment();
+      files.forEach(file => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `/file/${file}`;
+        a.appendChild(document.createTextNode(file));
+        li.appendChild(a);
+        frag.appendChild(li);
+      });
+      list.appendChild(frag);
+    });
+    var dropZone = document.getElementById("drop-zone");
+
+    dropZone.addEventListener("dragenter", function (e) {
+      this.classList.add("active");
+    });
+
+    dropZone.addEventListener("dragleave", function (e) {
+      this.classList.remove("active");
+    });
+
+    dropZone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+    });
+  </script>
 </body>
+
 </html>
