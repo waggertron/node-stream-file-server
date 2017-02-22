@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const PORT = process.env.PORT || 8080;
 
-const server = http.createServer( (req, res) => {
+const server = http.createServer((req, res) => {
   console.log(req.url);
   if (req.url === '/') {
     fs.createReadStream('./index.html').pipe(res);
@@ -16,15 +16,16 @@ const server = http.createServer( (req, res) => {
     if (req.method === "GET") {
       if (pieces && pieces[2]) return fileCtrl.sendFile(req, res, pieces[2]);
       return fileCtrl.sendFileList(req, res);
-    } 
-    else if (req.method === "POST") {
-      return fileCtrl.uploadFile(req, res, pieces[2]);
     }
   }
+  else if (req.url === "/upload") {
+    console.log('inside upload');
+    return fileCtrl.uploadFile(req, res);
+  }
   else {
-      res.end('<h1>not found!</h1>');
+    res.end('<h1>not found!</h1>');
   }
 
 });
 
-server.listen(8080, ()=> process.stdout.write(`Server listening on port ${PORT}\n`));
+server.listen(8080, () => process.stdout.write(`Server listening on port ${PORT}\n`));

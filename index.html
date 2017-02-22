@@ -41,17 +41,33 @@
       list.appendChild(frag);
     });
     var dropZone = document.getElementById("drop-zone");
-
     dropZone.addEventListener("dragenter", function (e) {
       this.classList.add("active");
     });
-
     dropZone.addEventListener("dragleave", function (e) {
       this.classList.remove("active");
     });
-
     dropZone.addEventListener("dragover", function (e) {
       e.preventDefault();
+    });
+    dropZone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      this.classList.remove("active");
+      // create a new FormData object
+      let fd = new FormData();
+      // iterate over the files dragged on to the browser
+      for (let x = 0; x < e.dataTransfer.files.length; x++) {
+        // add each file to FormData object
+        fd.append("file-" + x, e.dataTransfer.files[x]);
+      }
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // console.dir(JSON.parse(xhr.responseText));
+        }
+      };
+      xhr.open("POST", "/upload");
+      xhr.send(fd);
     });
   </script>
 </body>
